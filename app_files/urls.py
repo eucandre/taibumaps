@@ -1,9 +1,10 @@
 from django.urls import path
-from .views import new, index, edit, delete
+from .views import new, index, edit, delete, show
 
 urlpatterns = [
-    path('new/', new, name='new'),
-    path('', index, name='index'),
-    path('edit/<int:id>/', edit, name='edit'),
-    path('delete/<int:id>/', delete, name='delete'),
+    path('new/', new, name='files_new'),
+    path('', index, name='files_index'),
+    path('edit/<int:id>/', edit, name='files_edit'),
+    path('delete/<int:id>/', delete, name='files_delete'),
+    path('show/<int:id>', show, name='files_show')
 ]

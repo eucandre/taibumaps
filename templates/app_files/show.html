@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block javascript %}
+
+{% endblock javascript %}
+
+{% block content %}
+    <h2>{{item.title}}</h2>
+    <a href="{{item.file.url}}" target="_blank" class="btn btn-primary">{{item.file.name}}</a>
+    <p>{{item.description}}</p>
+{% endblock content %}
