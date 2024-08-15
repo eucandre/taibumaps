@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from .forms import SourceFiles, FormSourceFiles
 from django.contrib.auth.decorators import login_required
+from django.http import Http404, HttpResponse
+import os
 
 
 def handle_uploaded_file(f):
@@ -53,3 +55,20 @@ def edit(request, id):
     else:
         form = FormSourceFiles(instance=item)
     return render(request, 'app_files/new.html', {'form': form})
+
+@login_required(login_url='/login/')
+def download(request, id):
+    try:
+        item = SourceFiles.objects.get(id=id)
+        file_path = item.file.path
+
+        if not os.path.exists(file_path):
+            raise Http404("Arquivo não encontrado")
+
+        with open(file_path, 'rb') as file:
+            response = HttpResponse(file.read(), content_type='application/octet-stream')
+            response['Content-Disposition'] = f'attachment; filename="{item.file.name}"'
+            return response
+
+    except SourceFiles.DoesNotExist:
+        raise Http404("Item não encontrado")

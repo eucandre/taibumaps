@@ -5,7 +5,7 @@ from .models import CustomUser
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm):
         model = CustomUser
-        fields = ('email', 'name')
+        fields = ('email', 'name','role')
     
     def __init__(self, *args, **kwargs):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
@@ -14,6 +14,8 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['email'].widget.attrs['class'] = 'form-control'
         self.fields['name'].label = 'Nome'
         self.fields['name'].widget.attrs['class'] = 'form-control'
+        self.fields['role'].label = 'Perfil de Acesso'
+        self.fields['role'].widget.attrs['class'] = 'form-control'
         self.fields['password1'].label = 'Senha'
         self.fields['password1'].widget.attrs['class'] = 'form-control'
         self.fields['password2'].label = 'Confirmação da Senha'
@@ -22,4 +24,4 @@ class CustomUserCreationForm(UserCreationForm):
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
-        fields = ('email', 'name')
+        fields = ('email', 'name','role')

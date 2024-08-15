@@ -7,5 +7,6 @@
 {% block content %}
     <h2>{{item.title}}</h2>
     <a href="{{item.file.url}}" target="_blank" class="btn btn-primary">{{item.file.name}}</a>
+    <a href="/files/download/{{item.id}}" class="btn btn-primary"><i class="ri-arrow-down-circle-line"></i>Download</a>
     <p>{{item.description}}</p>
 {% endblock content %}
