@@ -5,7 +5,7 @@ from .models import Map
 class FormMap(forms.ModelForm):
     class Meta:
         model = Map
-        fields = ['farm','name','url','description','main_map_selected']
+        fields = ['farm','name','url','lat','long','description','main_map_selected']
     
     def __init__(self, *args, **kwargs):
         super(FormMap, self).__init__(*args, **kwargs)
@@ -26,6 +26,10 @@ class FormMap(forms.ModelForm):
         self.fields['url'].widget.attrs['class'] = 'form-control'
         self.fields['url'].widget.attrs['placeholder'] = 'URL do mapa'
         self.fields['url'].label = "URL do mapa"
+        self.fields['lat'].label = 'Latitude'
+        self.fields['lat'].widget.attrs['class'] = 'form-control'
+        self.fields['long'].label = 'Longitude'
+        self.fields['long'].widget.attrs['class'] = 'form-control'
         self.fields['main_map_selected'].widget.attrs['class'] = 'form-check-input'
         self.fields['main_map_selected'].label = "Mapa principal"
         self.fields['main_map_selected'].widget.attrs['type'] = 'checkbox'

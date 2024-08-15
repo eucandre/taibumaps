@@ -6,4 +6,24 @@
         {{form.as_p}}
         <button type="submit" class="btn btn-info">Salvar</button>
     </form>
+
+    <script>
+        document.getElementById('id_lat').addEventListener('input', function(e) {
+            this.value = ensureNegative(this.value);
+        });
+
+        document.getElementById('id_long').addEventListener('input', function(e) {
+            this.value = ensureNegative(this.value);
+        });
+
+        function ensureNegative(value) {
+            if (value === '' || value === '-') {
+                return '-'; // Mantém o campo vazio ou com apenas o sinal negativo
+            }
+            if (value[0] !== '-') {
+                value = '-' + value; // Adiciona o sinal de negativo
+            }
+            return value.replace(/[^-0-9.]/g, ''); // Remove qualquer caractere não numérico, exceto o sinal negativo e o ponto decimal
+        }
+    </script>
 {% endblock content %}

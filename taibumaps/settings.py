@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'app_user',
     'app_mapa',
     'app_fazenda',
+    'app_files',
 ]
 
 AUTH_USER_MODEL = 'app_user.CustomUser'

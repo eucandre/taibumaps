@@ -12,134 +12,27 @@
 
 <aside id="sidebar" class="sidebar">
   <ul class="sidebar-nav" id="sidebar-nav">
-      {% if request.user.organ.acronym == 'SEGOV' %}
-          {% if request.user.role == 'gestor' %}
-              <li class="nav-item list-group">
-                  <a class="nav-link" data-bs-target="#icons-nav2" data-bs-toggle="collapse" href="#">
-                      <i class="bi bi-person"></i><span>Usuários</span><i class="bi bi-chevron-down ms-auto"></i>
-                  </a>
-                  <ul id="icons-nav2" class="nav-content show" data-bs-parent="#sidebar-nav">
-                      <li>
-                          <a href="/users/index/">
-                              <i class="bi bi-circle"></i><span>Todos os Usuários</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="/users/new/">
-                              <i class="bi bi-circle"></i><span>Registrar Novos Usuários</span>
-                          </a>
-                      </li>
-                  </ul>
-              </li>
-              <li class="nav-item list-group">
-                  <a class="nav-link" data-bs-target="#icons-navAdmin" data-bs-toggle="collapse" href="#">
-                      <i class="bi bi-grid"></i><span>Administrativo</span><i class="bi bi-chevron-down ms-auto"></i>
-                  </a>
-                  <ul id="icons-navAdmin" class="nav-content show" data-bs-parent="#sidebar-nav">
-                      <li>
-                          <a href="/bairros/index/">
-                              <i class="bi bi-circle"></i><span>Todos os Bairros</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="/organs/index/">
-                              <i class="bi bi-circle"></i><span>Todos os Órgãos</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="/services/index/">
-                              <i class="bi bi-circle"></i><span>Todos os Serviços</span>
-                          </a>
-                      </li>
-                      <li>
-                        <a href="/caves/index/">
-                            <i class="bi bi-circle"></i><span>Todas as Grotas</span>
-                        </a>
-                    </li>
-                  </ul>
-              </li>
-          {% endif %}
-          <li class="nav-item list-group">
-              <a class="nav-link" data-bs-target="#icons-Solicitantes" data-bs-toggle="collapse" href="#">
-                  <i class="bi bi-pen"></i><span>Solicitantes</span><i class="bi bi-chevron-down ms-auto"></i>
-              </a>
-              <ul id="icons-Solicitantes" class="nav-content show" data-bs-parent="#sidebar-nav">
-                  <li>
-                      <a href="/leadership/index/">
-                          <i class="bi bi-circle"></i><span>Todos os Solicitantes</span>
-                      </a>
-                  </li>
-                  <li>
-                      <a href="/leadership/new/">
-                          <i class="bi bi-circle"></i><span>Registrar Novos Solicitantes</span>
-                      </a>
-                  </li>
-              </ul>
-          </li>
-          <li class="nav-item list-group">
-            <a class="nav-link" data-bs-target="#icons-Demandas" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-gear"></i><span>Demandas</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-              <ul id="icons-Demandas" class="nav-content show" data-bs-parent="#sidebar-nav">
-                  <li>
-                      <a href="/requests/index/">
-                          <i class="bi bi-circle"></i><span>Todas as Demandas</span>
-                      </a>
-                      <a href="/lista_nao_aceitas_all/">
-                        <i class="bi bi-circle"></i><span>Todas as Demandas Não Autorizadas</span>
-                      </a>
-                      <a href="/lista_aceitas_all/">
-                        <i class="bi bi-circle"></i><span>Todas as Demandas Autorizadas</span>
-                      </a>
-                      <a href="/requests_list_conclude/">
-                        <i class="bi bi-circle"></i><span>Todas as Demandas Concluídas</span>
-                      </a>
-                      <a href="/requests_list_not_conclude/">
-                        <i class="bi bi-circle"></i><span>Todas as Demandas Não Concluídas</span>
-                      </a>
-                      <a href="/requests_list_in_progress/">
-                        <i class="bi bi-circle"></i><span>Todas as Demandas Em Andamento</span>
-                      </a>
-                      <a href="/requests_accepted_list_to_start/">
-                        <i class="bi bi-circle"></i><span>Todas as Demandas A Iniciar</span>
-                      </a>
-                      <a href="/caves/list_all_requests_to_caves/">
-                        <i class="bi bi-circle"></i><span>Todas as Demandas Nas Grotas</span>
-                      </a>
-                  </li>
-              </ul>
-          </li>
-      {% endif %}
-      {% if request.user.organ.acronym != 'SEGOV' %}
-          <li class="nav-item list-group">
-            <a class="nav-link" data-bs-target="#icons-Demanda2" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-gear"></i><span>Demandas</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-              <ul id="icons-Demanda2" class="nav-content show" data-bs-parent="#sidebar-nav">
-                  <li>
-                      <a href="/requests/index/">
-                          <i class="bi bi-circle"></i><span>Todas as Demandas</span>
-                      </a>
-                      <a href="/lista_nao_aceitas_all/">
-                        <i class="bi bi-circle"></i><span>Todas as Demandas Não Autorizadas</span>
-                      </a>
-                      <a href="/lista_aceitas_all/">
-                          <i class="bi bi-circle"></i><span>Todas as Demandas Autorizadas</span>
-                      </a>
-                  </li>
-              </ul>
-          </li>
-      {% endif %}
-      {% if request.user.role == 'gestor' or request.user.role == 'mantenedor' %}
-      <li class="nav-item list-group">
-        <ul id="icons-nav" class="nav-content show" data-bs-parent="#sidebar-nav">
+    <li class="nav-item list-group">
+        <a class="nav-link" data-bs-target="#icons-navAdmin" data-bs-toggle="collapse" href="#">
+            <i class="bi bi-grid"></i><span>Administrativo</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="icons-navAdmin" class="nav-content show" data-bs-parent="#sidebar-nav">
             <li>
-                <a href="/requests/new/">
-                    <i class="bi bi-gear"></i><span>Registrar Novas Demandas</span>
+                <a href="/farms/">
+                    <i class="bi bi-circle"></i><span>Todas as Fazendas</span>
+                </a>
+            </li>
+            <li>
+                <a href="/maps/">
+                    <i class="bi bi-circle"></i><span>Todos os Mapas</span>
+                </a>
+            </li>
+            <li>
+                <a href="/services/index/">
+                    <i class="bi bi-circle"></i><span>Todos os Arquivos</span>
                 </a>
             </li>
         </ul>
     </li>
-    {% endif %}
   </ul>
 </aside>

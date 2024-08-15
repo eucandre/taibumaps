@@ -10,6 +10,8 @@ class Map(models.Model):
     farm = models.ForeignKey(Farm, on_delete=models.CASCADE, blank=True, null=True)
     name = models.CharField(max_length=100)
     url = models.CharField(max_length=255,blank=True, null=True)
+    lat = models.CharField(max_length=50, blank=True, null=True)
+    long = models.CharField(max_length=50, blank=True, null=True)
     description = models.TextField()
     main_map_selected = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
