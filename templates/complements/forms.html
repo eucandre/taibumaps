@@ -1,0 +1,31 @@
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if form.errors %}
+    <div style="color: red;">
+        <h3>Form Errors:</h3>
+        <ul>
+            {% for field in form %}
+                {% if field.errors %}
+                    <li>
+                        <strong>{{ field.label }}:</strong> {{ field.errors|striptags }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <li>{{ error|striptags }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-danger" id="id_submit_button">Salvar</button>
+    <button type="button" class="btn btn-info" id="btn-back">Voltar</button>
+</form>
+
+<script>
+    function back_imediate_page(){
+        history.back();
+    }
+    document.getElementById("btn-back").addEventListener("click", back_imediate_page);
+</script>

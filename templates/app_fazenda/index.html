@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+    <div class="pagetitle">
+      <h1>Fazendas</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Tables</li>
+          <li class="breadcrumb-item active">Data</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <a href="/farms/new/" type="button" class="btn btn-primary">Nova Fazenda</a>
+
+              <!-- Table with stripped rows -->
+              <table class="table datatable">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Latitude</th>
+                    <th scope="col">Longitude</th>
+                    <th scope="col">Opções</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for i in item %}
+                        <tr>
+                            <th scope="row">{{i.id}}</th>
+                            <td>{{i.name}}</td>
+                            <td>{{i.lat}}</td>
+                            <td>{{i.long}}</td>
+                            <td><a type="button" class="btn btn-warning">Editar</a><a type="button" class="btn btn-danger">Deletar</a><a type="button" class="btn btn-info">Visualizar</a></td>
+                        </tr>
+                    {% endfor %}
+                  
+                </tbody>
+              </table>
+              <!-- End Table with stripped rows -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  
+
+{% endblock content %}

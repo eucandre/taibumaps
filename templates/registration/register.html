@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block head_page %}
+<h1>Cadastro de Usuários</h1>
+  <nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item">Lista Usuários</li>
+      <li class="breadcrumb-item active">Cadastro de Usuários</li>
+    </ol>
+  </nav>
+{% endblock head_page %}
+{% block content %}
+<section class="section">
+  <div class="row">
+    <div class="col-lg-6">
+      {% if messages %}
+      <ul class="messages">
+          {% for message in messages %}
+          <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+          {% endfor %}
+      </ul>
+      {% endif %}      
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Cadastro de Usuário</h5>
+          {%include 'complements/forms.html'%}
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+{% endblock content %}

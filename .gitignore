@@ -1,0 +1,5 @@
+*.log
+*.env
+*.sqlite3
+*.pyc
+*.txt
