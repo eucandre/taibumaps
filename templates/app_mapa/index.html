@@ -43,7 +43,7 @@
                             <td>{{i.farm}}</td>
                             <td>{{i.url}}</td>
                             <td>{{i.main_map_selected}}</td>
-                            <td><a type="button" class="btn btn-warning">Editar</a><a type="button" class="btn btn-danger">Deletar</a><a type="button" class="btn btn-info">Visualizar</a></td>
+                            <td><a href="/maps/edit/{{i.id}}" type="button" class="btn btn-warning">Editar</a><a href="/maps/delete/{{i.id}}" type="button" class="btn btn-danger">Deletar</a><a href="/maps/show/{{i.id}}" type="button" class="btn btn-info">Visualizar</a></td>
                         </tr>
                     {% endfor %}
                   

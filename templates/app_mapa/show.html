@@ -7,6 +7,7 @@
 
 {% block content %}
     <div id="map" style="width: 100%; height: 500px;"></div>
+    <button id="geolocateButton">Centralizar no meu local</button>
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoiZXVjYW5kcmUiLCJhIjoiY2tsd29wb2h0MGVhZDJ2a3Y2eGh6enZiaiJ9.WynOaYbBjnq5URSjtXRg7A'; // Substitua pela sua chave de acesso ao Mapbox
 
@@ -16,5 +17,29 @@
             center: [-35.7353, -9.6658], // Defina as coordenadas iniciais [longitude, latitude]
             zoom: 12 // Nível de zoom inicial
         });
+        // Função para centralizar o mapa na localização do usuário
+        function centerMapOnUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const userCoordinates = [position.coords.longitude, position.coords.latitude];
+                    map.flyTo({
+                        center: userCoordinates,
+                        zoom: 14
+                    });
+
+                    // Adiciona um marcador na localização do usuário
+                    new mapboxgl.Marker()
+                        .setLngLat(userCoordinates)
+                        .addTo(map);
+                }, () => {
+                    alert('Não foi possível obter a localização.');
+                });
+            } else {
+                alert('Geolocalização não é suportada pelo seu navegador.');
+            }
+        }
+
+        // Adiciona evento de clique ao botão para centralizar o mapa
+        document.getElementById('geolocateButton').addEventListener('click', centerMapOnUserLocation);
     </script>
 {% endblock content %}
