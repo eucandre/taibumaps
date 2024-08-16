@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block javascript %}
+
+{% endblock javascript %}
+
+{% block content %}
+    <h2>{{item.name}}</h2>
+    
+    <span>Latitude: {{item.lat}}</span>
+    <span>Longitude: {{item.long}}</span>
+{% endblock content %}

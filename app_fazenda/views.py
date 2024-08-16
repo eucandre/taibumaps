@@ -22,8 +22,12 @@ def new(request):
     return render(request, 'app_fazenda/new.html', {'form': form})
 
 def index(request):
-    item = Farm.objects.all()
-    return render(request, 'app_fazenda/index.html', {'item': item})
+    if request.user.role == 'admnistrador':
+        item = Farm.objects.all()
+        return render(request, 'app_fazenda/index.html', {'item': item})
+    else:
+        item = Farm.objects.filter(user=request.user)
+        return render(request, 'app_fazenda/index.html', {'item': item})
 
 def show(request, id):
     item = Farm.objects.get(id=id)
@@ -31,7 +35,18 @@ def show(request, id):
 
 def edit(request, id):
     item = Farm.objects.get(id=id)
-    return render(request, 'app_fazenda/edit.html', {'item': item})
+    if request.method == 'POST':
+        form = FormFarm(request.POST, instance = item)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Atualizado com sucesso!')
+            return redirect('farm_index')
+        else:
+            messages.error(request, 'Erro ao Atualizar!')
+            return render(request, 'app_fazenda/new.html', {'form': form})
+    else:
+        form = FormFarm(instance = item)
+    return render(request, 'app_fazenda/new.html', {'form': form})
 
 def delete(request, id):
     item = Farm.objects.get(id=id)

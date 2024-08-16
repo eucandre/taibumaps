@@ -41,7 +41,7 @@
                             <td>{{i.name}}</td>
                             <td>{{i.lat}}</td>
                             <td>{{i.long}}</td>
-                            <td><a type="button" class="btn btn-warning">Editar</a><a type="button" class="btn btn-danger">Deletar</a><a type="button" class="btn btn-info">Visualizar</a></td>
+                            <td><a  href="/edit/{{i.id}}" type="button" class="btn btn-warning">Editar</a><a href="/delete/{{i.id}}" type="button" class="btn btn-danger">Deletar</a><a href="/show/{{i.id}}" type="button" class="btn btn-info">Visualizar</a></td>
                         </tr>
                     {% endfor %}
                   

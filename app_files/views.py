@@ -31,8 +31,12 @@ def new(request):
 
 @login_required(login_url='/login/')
 def index(request):
-    items = SourceFiles.objects.all()
-    return render(request, 'app_files/index.html',{'item':items})
+    if request.user.role == 'admnistrador':
+        items = SourceFiles.objects.all()
+        return render(request, 'app_files/index.html',{'item':items})
+    else:
+        items = SourceFiles.objects.filter(user=request.user)
+        return render(request, 'app_files/index.html', {'item':items})
 
 @login_required(login_url='/login/')
 def show(request, id):
