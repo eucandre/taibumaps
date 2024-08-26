@@ -34,7 +34,7 @@ class LoginAPI(APIView):
             response_data = {
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
-                'redirect_url': '/'  # Substitua pela sua URL real
+                'redirect_url': 'http://191.252.177.19:8000/'
             }
 
             return Response(response_data, status=status.HTTP_200_OK)
