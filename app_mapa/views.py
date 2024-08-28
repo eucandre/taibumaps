@@ -16,7 +16,7 @@ def new(request):
             item.user = request.user
             item.save()
             messages.success(request, 'Operação realizada com sucesso!')
-            return redirect('map_index')
+            return redirect('/maps/')
         else:
             messages.error(request, 'Ocorreu um erro ao processar sua solicitação.')
     else:
@@ -33,8 +33,10 @@ def edit(request, id):
         form = FormMap(request.POST, instance=item)
         if form.is_valid():
             form.save()
-            return redirect('index')
-    return render(request, 'app_mapa/edit.html', {'item':item})
+            return redirect('/maps/')
+    else:
+        form = FormMap(instance=item)
+    return render(request, 'app_mapa/new.html', {'form':form})
 
 def get_maps(request):
     maps = Map.objects.all()

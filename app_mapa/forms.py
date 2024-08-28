@@ -30,7 +30,7 @@ class FormMap(forms.ModelForm):
         self.fields['lat'].widget.attrs['class'] = 'form-control'
         self.fields['long'].label = 'Longitude'
         self.fields['long'].widget.attrs['class'] = 'form-control'
-        self.fields['main_map_selected'].widget.attrs['class'] = 'form-check-input'
+        self.fields['main_map_selected'].widget.attrs['class'] = 'form-control'
         self.fields['main_map_selected'].label = "Mapa principal"
         self.fields['main_map_selected'].widget.attrs['type'] = 'checkbox'
         

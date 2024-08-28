@@ -7,16 +7,29 @@
 
 {% block content %}
     <div id="map" style="width: 100%; height: 500px;"></div>
-    <button id="geolocateButton">Centralizar no meu local</button>
+    <button id="geolocateButton" class="btn btn-info" title="Minha geolocalização">
+        <div class="icon">
+            <i class="bi bi-geo"></i>
+        </div>
+        
+    </button>
+    <div class="col-9">
+        <small>Latitude: {{item.lat}}</small>
+        <small>Longitude: {{item.long}}</small>
+        <small>Endereço do mapa: {{item.url}}</small>
+        <small>Dono do mapa: {{item.user.name}}</small>
+    </div>
     <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoiZXVjYW5kcmUiLCJhIjoiY2tsd29wb2h0MGVhZDJ2a3Y2eGh6enZiaiJ9.WynOaYbBjnq5URSjtXRg7A'; // Substitua pela sua chave de acesso ao Mapbox
+        // Use o token de acesso público
+        mapboxgl.accessToken = 'pk.eyJ1IjoiYnJ1bjB2ZmMiLCJhIjoiY2sxaWk3NjlqMDA1NDNkbGxxNTk1MDhjYiJ9.-nv91X8SUKqbQEjuLBCCuw';
 
         var map = new mapboxgl.Map({
             container: 'map', // ID do elemento onde o mapa será renderizado
-            style: 'mapbox://styles/eucandre/ckmpsnqmm0fuv17pqt1afy0xr', // URL do estilo do mapa
-            center: [-35.7353, -9.6658], // Defina as coordenadas iniciais [longitude, latitude]
-            zoom: 12 // Nível de zoom inicial
+            style: '{{item.url}}',//'mapbox://styles/brun0vfc/clpfjz8hw006q01p7csjy7eo5', // URL do estilo do mapa
+            center: ['{{item.long}}', '{{item.lat}}'], // Defina as coordenadas iniciais [longitude, latitude]
+            zoom: 15 // Nível de zoom inicial
         });
+
         // Função para centralizar o mapa na localização do usuário
         function centerMapOnUserLocation() {
             if (navigator.geolocation) {

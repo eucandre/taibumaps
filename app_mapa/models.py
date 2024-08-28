@@ -5,6 +5,8 @@ from app_user.models import CustomUser
 from app_fazenda.models import Farm
 
 
+OPTIONS = (('sim','SIM'),('nao','NÃO'))
+
 class Map(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     farm = models.ForeignKey(Farm, on_delete=models.CASCADE, blank=True, null=True)
@@ -13,7 +15,7 @@ class Map(models.Model):
     lat = models.CharField(max_length=50, blank=True, null=True)
     long = models.CharField(max_length=50, blank=True, null=True)
     description = models.TextField()
-    main_map_selected = models.BooleanField(default=False)
+    main_map_selected = models.CharField(max_length=3, choices=OPTIONS, default='nao')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
