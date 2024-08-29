@@ -11,4 +11,5 @@ urlpatterns = [
     path('show/<int:id>', show, name='map_show'),
     path('edit/<int:id>', edit, name='map_edit'),
     path('api/', MapView.as_view({'get':'list'}), name='map_api'),
+    path('api/<int:pk>/', MapView.as_view({'get': 'retrieve'}), name='map_api_detail'),
 ]
