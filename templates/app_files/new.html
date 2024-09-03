@@ -6,6 +6,11 @@
         {{form.as_p}}
         <button type="submit" class="btn btn-info">Salvar</button>
     </form>
-
+    <script>
+        document.getElementById('fileForm').addEventListener('submit', function(e) {
+            var input = document.querySelector('input[type="file"]');
+            console.log(input.files);  // Isso deve mostrar todos os arquivos selecionados no console
+        });
+    </script>
     
 {% endblock content %}
