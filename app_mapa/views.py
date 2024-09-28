@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import FormMap, Map
+from app_files.models import SourceFiles
 from django.http import JsonResponse
 from django.contrib import messages
 
@@ -25,7 +26,8 @@ def new(request):
 
 def show(request, id):
     item = Map.objects.get(id=id)
-    return render(request, 'app_mapa/show.html', {'item':item})
+    source_files = SourceFiles.objects.filter(map=item)
+    return render(request, 'app_mapa/show.html', {'item':item, 'source_files':source_files})
 
 def edit(request, id):
     item = Map.objects.get(id=id)

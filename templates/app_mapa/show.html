@@ -3,56 +3,306 @@
 {% block javascript %}
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl-draw/1.3.0/mapbox-gl-draw.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl-draw/1.3.0/mapbox-gl-draw.css" rel="stylesheet"/>
+
+<style>
+    /* Estilos para o seletor de camadas */
+    .layer-selector {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        z-index: 2; /* Z-index mais alto */
+        max-width: 200px; /* Largura máxima */
+    }
+
+    .layer-selector h3 {
+        margin: 0;
+        font-size: 16px;
+        color: #333;
+    }
+
+    #layer-select {
+        width: 100%;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #333;
+        background-color: #fff;
+        transition: border-color 0.2s ease;
+    }
+
+    #layer-select:hover,
+    #layer-select:focus {
+        border-color: #007bff; /* Cor do foco */
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    /* Estilos para o popup */
+    .mapboxgl-popup {
+        max-width: 200px; /* Largura máxima do popup */
+        z-index: 3; /* Z-index mais alto para o popup */
+    }
+
+    .mapboxgl-popup-content {
+        padding: 10px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        font-size: 14px; /* Tamanho da fonte */
+    }
+
+    .mapboxgl-popup-close-button {
+        display: none; /* Esconder o botão de fechar, se não for necessário */
+    }
+
+    /* Margem para o contêiner do mapa */
+    #map {
+        margin: 30px; /* Margem ao redor do mapa */
+        height: 500px; /* Altura do mapa */
+        position: relative;
+    }
+
+    /* Estilos para o botão de medir */
+    .measure-control {
+        position: absolute;
+        top: 150px;
+        left: 10px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        z-index: 2; /* Z-index mais alto */
+    }
+
+    .measure-control button {
+        display: block;
+        width: 100%;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        background-color: #fff;
+        cursor: pointer;
+    }
+
+    .measure-control button:hover {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+</style>
 {% endblock javascript %}
 
 {% block content %}
-    <div id="map" style="width: 100%; height: 500px;"></div>
-    <button id="geolocateButton" class="btn btn-info" title="Minha geolocalização">
-        <div class="icon">
-            <i class="bi bi-geo"></i>
-        </div>
-        
-    </button>
-    <div class="col-9">
-        <small>Latitude: {{item.lat}}</small>
-        <small>Longitude: {{item.long}}</small>
-        <small>Endereço do mapa: {{item.url}}</small>
-        <small>Dono do mapa: {{item.user.name}}</small>
+<div id="map">
+    <!-- Seletor de Camadas dentro do mapa -->
+    <div class="layer-selector">
+        <h3>Selecionar Camada</h3>
+        <select id="layer-select">
+            <option value="">-- Selecione uma camada --</option>
+        </select>
     </div>
-    <script>
-        // Use o token de acesso público
-        mapboxgl.accessToken = 'pk.eyJ1IjoiYnJ1bjB2ZmMiLCJhIjoiY2sxaWk3NjlqMDA1NDNkbGxxNTk1MDhjYiJ9.-nv91X8SUKqbQEjuLBCCuw';
 
-        var map = new mapboxgl.Map({
-            container: 'map', // ID do elemento onde o mapa será renderizado
-            style: '{{item.url}}',//'mapbox://styles/brun0vfc/clpfjz8hw006q01p7csjy7eo5', // URL do estilo do mapa
-            center: ['{{item.long}}', '{{item.lat}}'], // Defina as coordenadas iniciais [longitude, latitude]
-            zoom: 15 // Nível de zoom inicial
-        });
+    <!-- Controle de medição de área e régua -->
+    <div class="measure-control">
+        <button id="measure-area">Medir Área</button>
+        <button id="measure-distance">Medir Distância</button>
+    </div>
+</div>
 
-        // Função para centralizar o mapa na localização do usuário
-        function centerMapOnUserLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(position => {
-                    const userCoordinates = [position.coords.longitude, position.coords.latitude];
-                    map.flyTo({
-                        center: userCoordinates,
-                        zoom: 14
-                    });
+<script>
+    // Configurar o token de acesso
+    mapboxgl.accessToken = 'pk.eyJ1IjoiYnJ1bjB2ZmMiLCJhIjoiY2sxaWk3NjlqMDA1NDNkbGxxNTk1MDhjYiJ9.-nv91X8SUKqbQEjuLBCCuw';
 
-                    // Adiciona um marcador na localização do usuário
-                    new mapboxgl.Marker()
-                        .setLngLat(userCoordinates)
-                        .addTo(map);
-                }, () => {
-                    alert('Não foi possível obter a localização.');
-                });
-            } else {
-                alert('Geolocalização não é suportada pelo seu navegador.');
+    // Criar um novo mapa
+    var map = new mapboxgl.Map({
+        container: 'map', // ID do contêiner do mapa
+        style: '{{ item.url }}', // Estilo do mapa
+        center: [{{ item.long }}, {{ item.lat }}], // Coordenadas iniciais [longitude, latitude]
+        zoom: 15 // Nível de zoom inicial
+    });
+
+    // Adicionar controle de navegação
+    map.addControl(new mapboxgl.NavigationControl());
+
+    // Variáveis de controle para medições
+    var isMeasuringArea = false;
+    var isMeasuringDistance = false;
+    var draw = new MapboxDraw({
+        displayControlsDefault: false,
+        controls: {
+            polygon: true, // Permitir desenhar polígonos
+            trash: true // Permitir apagar polígonos
+        }
+    });
+    map.addControl(draw);
+
+    // Função para medir área
+    document.getElementById('measure-area').addEventListener('click', function() {
+        isMeasuringArea = !isMeasuringArea;
+        isMeasuringDistance = false; // Desativa a medição de distância
+        if (isMeasuringArea) {
+            draw.changeMode('draw_polygon');
+        } else {
+            draw.changeMode('simple_select');
+        }
+    });
+
+    // Evento de desenho finalizado (quando um polígono é desenhado)
+    map.on('draw.create', function (e) {
+        if (isMeasuringArea) {
+            var data = draw.getAll();
+            if (data.features.length > 0) {
+                var area = turf.area(data);
+                alert('Área: ' + area.toFixed(2) + ' metros quadrados');
             }
         }
+    });
 
-        // Adiciona evento de clique ao botão para centralizar o mapa
-        document.getElementById('geolocateButton').addEventListener('click', centerMapOnUserLocation);
-    </script>
+    // Função para medir distância
+    var distanceMarkers = [];
+    document.getElementById('measure-distance').addEventListener('click', function() {
+        isMeasuringDistance = !isMeasuringDistance;
+        isMeasuringArea = false; // Desativa a medição de área
+        if (isMeasuringDistance) {
+            map.on('click', addDistanceMarker);
+        } else {
+            clearDistanceMeasure();
+        }
+    });
+
+    // Função para adicionar marcador de distância e calcular distância
+    function addDistanceMarker(e) {
+        var marker = new mapboxgl.Marker()
+            .setLngLat(e.lngLat)
+            .addTo(map);
+
+        distanceMarkers.push(marker);
+
+        if (distanceMarkers.length > 1) {
+            var point1 = distanceMarkers[distanceMarkers.length - 2].getLngLat();
+            var point2 = distanceMarkers[distanceMarkers.length - 1].getLngLat();
+
+            var distance = turf.distance([point1.lng, point1.lat], [point2.lng, point2.lat], { units: 'kilometers' });
+            alert('Distância: ' + distance.toFixed(2) + ' km');
+        }
+    }
+
+    // Função para limpar as medições de distância
+    function clearDistanceMeasure() {
+        map.off('click', addDistanceMarker);
+        distanceMarkers.forEach(marker => marker.remove());
+        distanceMarkers = [];
+    }
+
+    // Função para carregar dados GeoJSON da API
+    function loadLayers() {
+        fetch('http://127.0.0.1:8000/files/api/sourcefiles/')
+            .then(response => response.json())
+            .then(data => {
+                var layerSelect = document.getElementById('layer-select');
+                
+                // Preencher o seletor de camadas
+                data.forEach(layer => {
+                    var option = document.createElement('option');
+                    option.value = layer.file; // URL do arquivo GeoJSON
+                    option.textContent = layer.title; // Nome da camada
+                    layerSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Erro ao carregar as camadas:', error);
+            });
+    }
+
+    // Função para adicionar uma camada GeoJSON ao mapa e centralizar o mapa na camada
+    function addLayer(geojsonFileUrl, layerName) {
+        // Adiciona a fonte GeoJSON
+        map.addSource(layerName, {
+            type: 'geojson',
+            data: geojsonFileUrl
+        });
+
+        // Adiciona a camada de preenchimento (polígonos)
+        map.addLayer({
+            id: layerName + '-fill',
+            type: 'fill',
+            source: layerName,
+            layout: {},
+            paint: {
+                'fill-color': '#088', // Cor do preenchimento
+                'fill-opacity': 0.5 // Opacidade do preenchimento
+            }
+        });
+
+        // Adiciona a camada de contorno (bordas dos polígonos)
+        map.addLayer({
+            id: layerName + '-outline',
+            type: 'line',
+            source: layerName,
+            layout: {},
+            paint: {
+                'line-color': '#000', // Cor do contorno
+                'line-width': 2 // Largura da linha de contorno
+            }
+        });
+
+        // Ajusta o "bounding box" para centralizar e dar zoom na camada
+        fetch(geojsonFileUrl)
+            .then(response => response.json())
+            .then(geojsonData => {
+                var bbox = turf.bbox(geojsonData);
+                map.fitBounds(bbox, {
+                    padding: 20
+                });
+            });
+
+        // Evento de clique para exibir informações da camada
+        map.on('click', layerName + '-layer', function(e) {
+            var features = map.queryRenderedFeatures(e.point, {
+                layers: [layerName + '-layer']
+            });
+
+            if (features.length > 0) {
+                var feature = features[0];
+                
+                // Use as propriedades corretas
+                var name = feature.properties.name || 'Sem nome';
+                var description = feature.properties.description || 'Sem descrição';
+
+                new mapboxgl.Popup()
+                    .setLngLat(e.lngLat)
+                    .setHTML('<strong>' + name + '</strong><p>' + description + '</p>')
+                    .addTo(map);
+            }
+        });
+
+
+    }
+
+    // Carregar dados GeoJSON ao selecionar uma camada
+    document.getElementById('layer-select').addEventListener('change', function() {
+        var selectedLayer = this.value;
+        if (selectedLayer) {
+            var layerName = 'custom-layer';
+            if (map.getSource(layerName)) {
+                map.removeLayer(layerName + '-fill');
+                map.removeLayer(layerName + '-outline');
+                map.removeSource(layerName);
+            }
+            addLayer(selectedLayer, layerName);
+        }
+    });
+
+    // Carregar as camadas da API quando o mapa estiver carregado
+    map.on('load', loadLayers);
+</script>
 {% endblock content %}
