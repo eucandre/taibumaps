@@ -205,7 +205,7 @@
 
     // Função para carregar dados GeoJSON da API
     function loadLayers() {
-        fetch('localhost:8000/files/api/sourcefiles/')
+        fetch('/files/api/sourcefiles/')
             .then(response => response.json())
             .then(data => {
                 var layerSelect = document.getElementById('layer-select');
