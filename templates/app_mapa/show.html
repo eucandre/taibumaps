@@ -203,26 +203,42 @@
         distanceMarkers = [];
     }
 
-    // Função para carregar dados GeoJSON da API
+     // Função para carregar dados GeoJSON da API
     function loadLayers() {
+        var id_map = {{item.id}}
         fetch('/files/api/sourcefiles/')
             .then(response => response.json())
             .then(data => {
                 var layerSelect = document.getElementById('layer-select');
                 
-                // Preencher o seletor de camadas
+                // Limpa opções anteriores no seletor
+                layerSelect.innerHTML = '<option value="">-- Selecione uma camada --</option>';
+
+                // Filtra e adiciona ao seletor as camadas cujo map.id seja igual ao item.id
                 data.forEach(layer => {
-                    var option = document.createElement('option');
-                    option.value = layer.file; // URL do arquivo GeoJSON
-                    option.textContent = layer.title; // Nome da camada
-                    layerSelect.appendChild(option);
+                    if (layer.map.id === id_map) {  // Verifica se map.id é igual ao item.id
+                        var option = document.createElement('option');
+                        option.value = layer.file; // URL do arquivo GeoJSON
+                        option.textContent = layer.title; // Nome da camada
+                        layerSelect.appendChild(option);
+                    }
                 });
+
+                if (layerSelect.children.length === 1) {
+                    // Se não houver camadas correspondentes, adicione uma opção informando que não há camadas
+                    var option = document.createElement('option');
+                    option.value = "";
+                    option.textContent = "Nenhuma camada disponível";
+                    layerSelect.appendChild(option);
+                }
             })
             .catch(error => {
                 console.error('Erro ao carregar as camadas:', error);
             });
     }
 
+    // Carregar as camadas da API quando o mapa estiver carregado
+    map.on('load', loadLayers);
     // Função para adicionar uma camada GeoJSON ao mapa e centralizar o mapa na camada
     function addLayer(geojsonFileUrl, layerName) {
         // Adiciona a fonte GeoJSON
