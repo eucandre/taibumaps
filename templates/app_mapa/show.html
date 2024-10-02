@@ -240,69 +240,79 @@
     // Carregar as camadas da API quando o mapa estiver carregado
     map.on('load', loadLayers);
     // Função para adicionar uma camada GeoJSON ao mapa e centralizar o mapa na camada
-    function addLayer(geojsonFileUrl, layerName) {
-        // Adiciona a fonte GeoJSON
-        map.addSource(layerName, {
-            type: 'geojson',
-            data: geojsonFileUrl
-        });
+    // Função para adicionar uma camada GeoJSON ao mapa e centralizar o mapa na camada
+function addLayer(geojsonFileUrl, layerName) {
+    // Adiciona a fonte GeoJSON
+    map.addSource(layerName, {
+        type: 'geojson',
+        data: geojsonFileUrl
+    });
 
-        // Adiciona a camada de preenchimento (polígonos)
-        map.addLayer({
-            id: layerName + '-fill',
-            type: 'fill',
-            source: layerName,
-            layout: {},
-            paint: {
-                'fill-color': '#088', // Cor do preenchimento
-                'fill-opacity': 0.5 // Opacidade do preenchimento
-            }
-        });
+    // Adiciona a camada de preenchimento (polígonos)
+    map.addLayer({
+        id: layerName + '-fill',
+        type: 'fill',
+        source: layerName,
+        layout: {},
+        paint: {
+            'fill-color': '#088', // Cor do preenchimento
+            'fill-opacity': 0.5 // Opacidade do preenchimento
+        }
+    });
 
-        // Adiciona a camada de contorno (bordas dos polígonos)
-        map.addLayer({
-            id: layerName + '-outline',
-            type: 'line',
-            source: layerName,
-            layout: {},
-            paint: {
-                'line-color': '#000', // Cor do contorno
-                'line-width': 2 // Largura da linha de contorno
-            }
-        });
+    // Adiciona a camada de contorno (bordas dos polígonos)
+    map.addLayer({
+        id: layerName + '-outline',
+        type: 'line',
+        source: layerName,
+        layout: {},
+        paint: {
+            'line-color': '#000', // Cor do contorno
+            'line-width': 2 // Largura da linha de contorno
+        }
+    });
 
-        // Ajusta o "bounding box" para centralizar e dar zoom na camada
-        fetch(geojsonFileUrl)
-            .then(response => response.json())
-            .then(geojsonData => {
-                var bbox = turf.bbox(geojsonData);
-                map.fitBounds(bbox, {
-                    padding: 20
-                });
+    // Ajusta o "bounding box" para centralizar e dar zoom na camada
+    fetch(geojsonFileUrl)
+        .then(response => response.json())
+        .then(geojsonData => {
+            var bbox = turf.bbox(geojsonData);
+            map.fitBounds(bbox, {
+                padding: 20
             });
-
-        // Evento de clique para exibir informações da camada
-        map.on('click', layerName + '-layer', function(e) {
-            var features = map.queryRenderedFeatures(e.point, {
-                layers: [layerName + '-layer']
-            });
-
-            if (features.length > 0) {
-                var feature = features[0];
-                
-                // Use as propriedades corretas
-                var name = feature.properties.name || 'Sem nome';
-                var description = feature.properties.description || 'Sem descrição';
-
-                new mapboxgl.Popup()
-                    .setLngLat(e.lngLat)
-                    .setHTML('<strong>' + name + '</strong><p>' + description + '</p>')
-                    .addTo(map);
-            }
         });
 
+    // Evento de clique para exibir informações da camada
+map.on('click', layerName + '-fill', function(e) {
+    var features = map.queryRenderedFeatures(e.point, {
+        layers: [layerName + '-fill']
+    });
 
+    if (features.length > 0) {
+        var feature = features[0];
+
+        // Exibe todas as propriedades para depuração
+        console.log("Propriedades do recurso:", feature.properties);
+
+        // Construir o conteúdo do popup com todas as propriedades
+        var popupContent = "<span>Informações da Camada</span><ul>";
+        for (var prop in feature.properties) {
+            if (feature.properties.hasOwnProperty(prop)) {
+                popupContent += "<li><strong>" + prop + ":</strong> " + feature.properties[prop] + "</li>";
+            }
+        }
+        popupContent += "</ul>";
+
+        new mapboxgl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML(popupContent)
+            .addTo(map);
     }
+});
+
+
+}
+
 
     // Carregar dados GeoJSON ao selecionar uma camada
     document.getElementById('layer-select').addEventListener('change', function() {
